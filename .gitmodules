@@ -1,0 +1,3 @@
+[submodule "app"]
+	path = app
+	url = https://git.pauljako.de/pauljako/mensa-pp-web
