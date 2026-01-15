@@ -24,6 +24,7 @@ def login(user_id, password) -> str | None:
 
 
 def get_menu(session_id: str, timestamp: str | None) -> dict[int, list[dict[str, str]]] | None:
+    """Returns the food menu"""
     if timestamp is None:
         params = {}
     else:
@@ -90,6 +91,21 @@ def get_menu(session_id: str, timestamp: str | None) -> dict[int, list[dict[str,
             meals[current_menu].append(meal_item)
 
     return meals
+
+
+def order_meal(session_id: str, meal_id: str) -> bool:
+    """Orders an Item from the menu"""
+    response = requests.get(URL, headers=HEADERS, cookies={"PHPSESSID": session_id},
+                            params={"essenid": meal_id, "bestellvorgang": "true"})
+
+    return response.ok
+
+
+def cancel_meal(session_id: str, meal_id: str) -> bool:
+    """Cancels an ordered Meal from the menu"""
+    response = requests.get(URL, headers=HEADERS, cookies={"PHPSESSID": session_id}, params={"storno": meal_id})
+
+    return response.ok
 
 
 if __name__ == "__main__":

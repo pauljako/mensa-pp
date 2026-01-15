@@ -40,5 +40,45 @@ def get_menu():
         return menu, 200
 
 
+@app.route("/api/order", methods=["POST"])
+def order():
+    if "Session-Id" not in flask.request.headers:
+        return "Authentication expected", 401
+
+    session_id = flask.request.headers.get("Session-Id")
+
+    if "Meal-Id" not in flask.request.headers:
+        return "Meal-Id expected", 400
+    else:
+        meal_id = flask.request.headers["Meal-Id"]
+
+    result = scraper.order_meal(session_id, meal_id)
+
+    if result:
+        return "success", 200
+    else:
+        return "error", 500
+
+
+@app.route("/api/cancel", methods=["DELETE"])
+def cancel():
+    if "Session-Id" not in flask.request.headers:
+        return "Authentication expected", 401
+
+    session_id = flask.request.headers.get("Session-Id")
+
+    if "Meal-Id" not in flask.request.headers:
+        return "Meal-Id expected", 400
+    else:
+        meal_id = flask.request.headers["Meal-Id"]
+
+    result = scraper.cancel_meal(session_id, meal_id)
+
+    if result:
+        return "success", 200
+    else:
+        return "error", 500
+
+
 if __name__ == "__main__":
     app.run("0.0.0.0", 32339)
