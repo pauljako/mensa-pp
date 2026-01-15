@@ -1,8 +1,10 @@
 import flask
+import flask_cors
 
 import scraper
 
 app = flask.Flask(__name__)
+flask_cors.CORS(app)
 
 
 @app.route("/api/login", methods=["POST"])
