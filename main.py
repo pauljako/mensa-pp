@@ -3,7 +3,7 @@ import flask_cors
 
 import scraper
 
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_url_path="/app", static_folder="./app")
 flask_cors.CORS(app)
 
 
@@ -78,6 +78,11 @@ def cancel():
         return "success", 200
     else:
         return "error", 500
+
+
+@app.route("/")
+def show_app():
+    return flask.redirect("/app/index.html")
 
 
 if __name__ == "__main__":
