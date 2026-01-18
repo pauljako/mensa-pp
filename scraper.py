@@ -1,3 +1,4 @@
+import re
 import sys
 import urllib.parse
 
@@ -8,19 +9,24 @@ URL = "https://mutlangen.mensa-pro.de/index.php"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 
 
-def login(user_id, password) -> str | None:
+def login(user_id, password) -> tuple[str | None, str | None]:
     """Logs the User in and returns a session id"""
     response = requests.post(
         URL,
         headers=HEADERS,
         data={"user_id": user_id, "user_pwd": password},
     )
+    valid = (bs4.BeautifulSoup(response.text, "html.parser").find(string=re.compile("Login inkorrekt")) is None)
+    if not valid:
+        return None, None
+
+    name = bs4.BeautifulSoup(response.text, "html.parser").find_all(class_="nav_act")[1].get_text()
 
     cookies = requests.utils.dict_from_cookiejar(response.cookies)
     if "PHPSESSID" in cookies:
-        return cookies["PHPSESSID"]
+        return cookies["PHPSESSID"], name
 
-    return None
+    return None, name
 
 
 def get_menu(session_id: str, timestamp: str | None) -> dict[int, list[dict[str, str]]] | None:
