@@ -12,12 +12,12 @@ def login():
     if "id" not in flask.request.form or "password" not in flask.request.form:
         return "id and password expected in form", 400
 
-    session_id, name = scraper.login(flask.request.form["id"], flask.request.form["password"])
+    session_id, name, balance = scraper.login(flask.request.form["id"], flask.request.form["password"])
 
     if session_id is None:
         return "Wrong credentials", 401
     else:
-        return {"session_id": session_id, "name": name}, 200
+        return {"session_id": session_id, "name": name, "balance": balance}, 200
 
 
 @app.route("/api/menu", methods=["GET"])
